@@ -1,11 +1,14 @@
-from http.server import BaseHTTPRequestHandler, HTTPServer
-from urllib.parse import urlparse, parse_qs
+from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+from urlparse import urlparse, parse_qs
+import ola_color
 import time
 
-hostName = "localhost"
+hostName = ""
 hostPort = 9000
 PARAM_ACTION = "action"
-PARAM_COLOR = "color"
+C_RED = "r"
+C_GREEN = "g"
+C_BLUE = "b"
 ACTION_COLOR = "color"
 
 class MyServer(BaseHTTPRequestHandler):
@@ -16,27 +19,49 @@ class MyServer(BaseHTTPRequestHandler):
         params = parse_qs(urlparse(url).query)
 
         # execute action
-        action = params.get(PARAM_ACTION)
-        if action and action[0] == ACTION_COLOR:
-            print ("ACTION: COLOR")
-            color = params.get(PARAM_COLOR)
-            if color:
-                self.set_color(color[0])
-        else:
-            print ("ACTION: none")
+        rP = params.get(C_RED)
+        gP = params.get(C_GREEN)
+        bP = params.get(C_BLUE)
+        r = int(rP[0]) if rP else 0
+        g = int(gP[0]) if gP else 0
+        b = int(bP[0]) if bP else 0
+        self.set_color(r,g,b)
             
         # write html
         self.send_response(200)
         self.send_header("Content-type", "text/html")
         self.end_headers()
-        self.wfile.write(bytes("<html><head><title>Title goes here.</title></head>", "utf-8"))
-        self.wfile.write(bytes("<body><p>This is a test.</p>", "utf-8"))
-        self.wfile.write(bytes("<p>You accessed path: %s</p>" % url, "utf-8"))
-        self.wfile.write(bytes("<p>Parameters: %s</p>" % params, "utf-8"))
-        self.wfile.write(bytes("</body></html>", "utf-8"))
 
-    def set_color(self,color):
-        print("Setting color to: %s" % color)
+	html = """
+	<html>
+	<head>
+	<script type="text/javascript" 
+	src="https://github.com/DavidDurman/FlexiColorPicker/raw/master/colorpicker.min.js"></script>
+	<style type="text/css">
+        #picker { width: 200px; height: 200px }
+        #slide { width: 30px; height: 200px }
+	</style>
+	</head>
+	<body>
+	<div id="picker"></div>
+	<div id="slide"></div>
+	<script type="text/javascript">
+	ColorPicker(
+			document.getElementById('slide'),
+			document.getElementById('picker'),
+			function(hex, hsv, rgb) {
+			window.location.href = "?r=" + rgb.r + "&g=" + rgb.g + "&b=" + rgb.b;
+			});
+        </script>
+        </body>
+        </html>
+	"""
+        self.wfile.write(html)
+
+
+    def set_color(self,r,g,b):
+        print("Setting color to: (%i,%i,%i)" % (r, g, b))
+        ola_color.SendDMXFrame(r,g,b)
 
 myServer = HTTPServer((hostName, hostPort), MyServer)
 print(time.asctime(), "Server Starts - %s:%s" % (hostName, hostPort))
