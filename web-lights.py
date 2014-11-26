@@ -1,7 +1,8 @@
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from urlparse import urlparse, parse_qs
-import ola_color
+import ola_color_dummy as ola_color
 import time
+from os import curdir, sep
 
 hostName = ""
 hostPort = 9000
@@ -13,50 +14,66 @@ ACTION_COLOR = "color"
 
 class MyServer(BaseHTTPRequestHandler):
     def do_GET(self):
-
+        
         # parse params
         url = self.path
         params = parse_qs(urlparse(url).query)
+    
+        # show webinterface
+        if url == "/":
+            url = "/index.html"
+    
+        try:
+            #Check the file extension required and
+            #set the right mime type
 
-        # execute action
-        rP = params.get(C_RED)
-        gP = params.get(C_GREEN)
-        bP = params.get(C_BLUE)
-        r = int(rP[0]) if rP else 0
-        g = int(gP[0]) if gP else 0
-        b = int(bP[0]) if bP else 0
-        self.set_color(r,g,b)
+            sendReply = False
+            if url.endswith(".html"):
+                mimetype='text/html'
+                sendReply = True
+            if url.endswith(".jpg"):
+                mimetype='image/jpg'
+                sendReply = True
+            if url.endswith(".gif"):
+                mimetype='image/gif'
+                sendReply = True
+            if url.endswith(".js"):
+                mimetype='application/javascript'
+                sendReply = True
+            if url.endswith(".css"):
+                mimetype='text/css'
+                sendReply = True
+            if url.startswith("/color.do"):
+                sendReply = False
+                rP = params.get(C_RED)
+                gP = params.get(C_GREEN)
+                bP = params.get(C_BLUE)
+                r = int(rP[0]) if rP else 0
+                g = int(gP[0]) if gP else 0
+                b = int(bP[0]) if bP else 0
+                self.set_color(r,g,b)
+
+                
+            self.send_response(200)
             
-        # write html
-        self.send_response(200)
-        self.send_header("Content-type", "text/html")
-        self.end_headers()
+            if sendReply == True:
+                #Open the static file requested and send it
+                file_path = curdir + sep + url
+                print("Serving static file: %s" % file_path)
+                f = open(file_path) 
+                self.send_header('Content-type',mimetype)
+                self.end_headers()
+                self.wfile.write(f.read())
+                f.close()
+            else:
+                self.send_header('Content-type','text/html')
+                self.end_headers()
+                self.wfile.write("<html><body>OK</body></html>")
 
-	html = """
-	<html>
-	<head>
-	<script type="text/javascript" 
-	src="https://github.com/DavidDurman/FlexiColorPicker/raw/master/colorpicker.min.js"></script>
-	<style type="text/css">
-        #picker { width: 200px; height: 200px }
-        #slide { width: 30px; height: 200px }
-	</style>
-	</head>
-	<body>
-	<div id="picker"></div>
-	<div id="slide"></div>
-	<script type="text/javascript">
-	ColorPicker(
-			document.getElementById('slide'),
-			document.getElementById('picker'),
-			function(hex, hsv, rgb) {
-			window.location.href = "?r=" + rgb.r + "&g=" + rgb.g + "&b=" + rgb.b;
-			});
-        </script>
-        </body>
-        </html>
-	"""
-        self.wfile.write(html)
+
+        except IOError:
+            self.send_error(404,'File Not Found: %s' % self.path)
+        
 
 
     def set_color(self,r,g,b):
