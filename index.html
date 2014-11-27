@@ -1,36 +1,67 @@
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
+<title>WebLights</title>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 <script type="text/javascript" src="lib/jquery-1.11.1.min.js"></script>
 <script type="text/javascript" src="lib/raphael-min.js"></script>
 <script type="text/javascript" src="lib/colorwheel.js"></script>
 
 </head>
-<body>
+<body style="background-color:#5E5E5E">
+<img id="powerbutton" style="position:absolute;z-index:100" src="gfx/power.png"/>
 
-<div id="color_picker" style="width=300px; margin-left:auto; margin-right=auto;">
+<div id="color_picker" style="width=100%; margin-left:auto; margin-right=auto;">
 
 <div id="colorwheel" ></div>
 
-<input id="input" value="#FF9900" size="7"><br/>
+<!--<input id="input" value="#FF9900" size="7"/><br/>-->
 
 </div>
 
 
 
 
-<script type="text/javascript charset="utf-8">
+<script type="text/javascript" charset="utf-8">
 
+$(document).ready(function () 
+{
+	init();
+	
+	
+});
 
-  var cw = Raphael.colorwheel($("#colorwheel")[0],300);
-  cw.input($("#input")[0]);
+$(window).resize(function () 
+{
+	init();
+});
+
+function set_color(r,g,b)
+{
+  $.get("/color.do?r=" + r + "&g=" + g + "&b=" + b);
+}
+
+function init()
+{
+  var size = Math.min($(window).width(), $(window).height()) * 0.9
+  $("#colorwheel").empty();
+  var cw = Raphael.colorwheel($("#colorwheel")[0],size);
+  cw.color("#000000");
   
-  function set_color(color)
-  {
-	$.get("/color.do?r=" + parseInt(color.r) + "&g=" + parseInt(color.g) + "&b=" + parseInt(color.b));
-  }
+  //cw.input($("#input")[0]);
 
-  cw.ondrag(function(){}, function(){set_color(cw.color())});
+  cw.ondrag(function(){}, function(){set_color(parseInt(cw.color().r), parseInt(cw.color().g), parseInt(cw.color().b) )});
+  
+  $('#powerbutton').width(size * 0.15);
+  $('#powerbutton').height(size * 0.15);
+  $('#powerbutton').on('click', function(){
+	set_color(0,0,0);
+	});
+
+  
+}
+
   
 </script>
 	</body>

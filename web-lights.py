@@ -37,6 +37,9 @@ class MyServer(BaseHTTPRequestHandler):
             if url.endswith(".gif"):
                 mimetype='image/gif'
                 sendReply = True
+            if url.endswith(".png"):
+                mimetype='image/png'
+                sendReply = True
             if url.endswith(".js"):
                 mimetype='application/javascript'
                 sendReply = True
@@ -60,7 +63,7 @@ class MyServer(BaseHTTPRequestHandler):
                 #Open the static file requested and send it
                 file_path = curdir + sep + url
                 print("Serving static file: %s" % file_path)
-                f = open(file_path) 
+                f = open(file_path, 'rb') 
                 self.send_header('Content-type',mimetype)
                 self.end_headers()
                 self.wfile.write(f.read())
