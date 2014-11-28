@@ -1,8 +1,9 @@
+#!/usr/bin/env python
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from urlparse import urlparse, parse_qs
-import ola_color_dummy as ola_color
-import time, json
-from os import curdir, sep
+import ola_color as ola_color
+import time, json, sys
+from os import curdir, sep, path
 
 HOST = ""
 PORT = 9000
@@ -11,6 +12,7 @@ C_RED = "r"
 C_GREEN = "g"
 C_BLUE = "b"
 ACTION_COLOR = "color"
+ROOT = path.dirname(path.realpath(sys.argv[0]))
 
 class MyServer(BaseHTTPRequestHandler):
     def do_GET(self):
@@ -71,7 +73,7 @@ class MyServer(BaseHTTPRequestHandler):
             
             if sendReply == True:
                 #Open the static file requested and send it
-                file_path = curdir + sep + url
+                file_path = ROOT + sep + url
                 print("Serving static file: %s" % file_path)
                 f = open(file_path, 'rb') 
                 self.send_header('Content-type',mimetype)
@@ -85,7 +87,7 @@ class MyServer(BaseHTTPRequestHandler):
 
 
         except IOError:
-            self.send_error(404,'File Not Found: %s' % self.path)
+            self.send_error(404,'File Not Found: %s (Root: %s)' % (self.path,ROOT))
         
 
 

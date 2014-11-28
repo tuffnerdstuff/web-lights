@@ -35,6 +35,7 @@ def SendDMXFrame(r,g,b):
   wrapper.Client().SendDmx(UNIVERSE, data, DmxSent)
   
   # store color
+  global lastR, lastG, lastB
   lastR = r
   lastG = g
   lastB = b
