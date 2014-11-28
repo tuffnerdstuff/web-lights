@@ -1,11 +1,11 @@
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from urlparse import urlparse, parse_qs
 import ola_color_dummy as ola_color
-import time
+import time, json
 from os import curdir, sep
 
-hostName = ""
-hostPort = 9000
+HOST = ""
+PORT = 9000
 PARAM_ACTION = "action"
 C_RED = "r"
 C_GREEN = "g"
@@ -31,22 +31,24 @@ class MyServer(BaseHTTPRequestHandler):
             if url.endswith(".html"):
                 mimetype='text/html'
                 sendReply = True
-            if url.endswith(".jpg"):
+            elif url.endswith(".jpg"):
                 mimetype='image/jpg'
                 sendReply = True
-            if url.endswith(".gif"):
+            elif url.endswith(".gif"):
                 mimetype='image/gif'
                 sendReply = True
-            if url.endswith(".png"):
+            elif url.endswith(".png"):
                 mimetype='image/png'
                 sendReply = True
-            if url.endswith(".js"):
+            elif url.endswith(".js"):
                 mimetype='application/javascript'
                 sendReply = True
-            if url.endswith(".css"):
+            elif url.endswith(".css"):
                 mimetype='text/css'
                 sendReply = True
-            if url.startswith("/color.do"):
+            elif url.startswith("/color_set.do"):
+                mimetype='text/html'
+                replyString='OK'
                 sendReply = False
                 rP = params.get(C_RED)
                 gP = params.get(C_GREEN)
@@ -55,8 +57,16 @@ class MyServer(BaseHTTPRequestHandler):
                 g = int(gP[0]) if gP else 0
                 b = int(bP[0]) if bP else 0
                 self.set_color(r,g,b)
+            elif url.startswith("/color_get.do"):
+                mimetype='application/json'
+                color = ola_color.get_color()
+                replyString=json.dumps({'color':color})
+                sendReply = False
+            else: # Unsupported Media Type
+                self.send_error(415,'File has unsopported media type: %s' % self.path)
+                return
 
-                
+            # Supported Media Type
             self.send_response(200)
             
             if sendReply == True:
@@ -69,9 +79,9 @@ class MyServer(BaseHTTPRequestHandler):
                 self.wfile.write(f.read())
                 f.close()
             else:
-                self.send_header('Content-type','text/html')
+                self.send_header('Content-type',mimetype)
                 self.end_headers()
-                self.wfile.write("<html><body>OK</body></html>")
+                self.wfile.write(replyString)
 
 
         except IOError:
@@ -83,8 +93,8 @@ class MyServer(BaseHTTPRequestHandler):
         print("Setting color to: (%i,%i,%i)" % (r, g, b))
         ola_color.SendDMXFrame(r,g,b)
 
-myServer = HTTPServer((hostName, hostPort), MyServer)
-print(time.asctime(), "Server Starts - %s:%s" % (hostName, hostPort))
+myServer = HTTPServer((HOST, PORT), MyServer)
+print(time.asctime(), "Server Starts - %s:%s" % (HOST, PORT))
 
 try:
     myServer.serve_forever()
@@ -92,4 +102,4 @@ except KeyboardInterrupt:
     pass
 
 myServer.server_close()
-print(time.asctime(), "Server Stops - %s:%s" % (hostName, hostPort))
+print(time.asctime(), "Server Stops - %s:%s" % (HOST, PORT))

@@ -1,11 +1,15 @@
 import array
 from ola.ClientWrapper import ClientWrapper
+import storage
 
 wrapper = None
 UNIVERSE = 1
 SEGMENTS = 8
 COLORS = 3
 MAX_CHANNELS = 512
+lastR = 0
+lastG = 0
+lastB = 0
 
 def DmxSent(state):
   wrapper.Stop()
@@ -29,5 +33,16 @@ def SendDMXFrame(r,g,b):
 
   # send
   wrapper.Client().SendDmx(UNIVERSE, data, DmxSent)
-                 
-SendDMXFrame(0,0,0)
+  
+  # store color
+  lastR = r
+  lastG = g
+  lastB = b
+  storage.save_color(r,g,b)
+
+def get_color():
+    return (lastR,lastG,lastB)
+  
+# load defaults
+lastR,lastG,lastB = storage.load_color()
+SendDMXFrame(lastR,lastG,lastB)
