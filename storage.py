@@ -1,5 +1,6 @@
-from os.path import expanduser, join
 from os import makedirs
+from os.path import expanduser, join
+
 
 SETTINGS_DIR = ".web-lights"
 SETTINGS_FILE = "web-lights.conf"

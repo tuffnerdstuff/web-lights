@@ -1,17 +1,28 @@
 #!/usr/bin/env python
-from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
-from urlparse import urlparse, parse_qs
-import ola_color as ola_color
-import time, json, sys
 from os import curdir, sep, path
+import time, json, sys
+
+from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+from plugins.ola_color import ola_color_dummy as ola_color
+from plugins.rfpower import rfpower as rfpower
+from urlparse import urlparse, parse_qs
+
 
 HOST = ""
 PORT = 9000
 PARAM_ACTION = "action"
+
 C_RED = "r"
 C_GREEN = "g"
 C_BLUE = "b"
-ACTION_COLOR = "color"
+C_ACTION = "color"
+C_ACTION = "color"
+
+P_BASE = "base"
+P_ID = "id"
+P_STATE = "state"
+P_ACTION = "rfpower"
+
 ROOT = path.dirname(path.realpath(sys.argv[0]))
 
 class MyServer(BaseHTTPRequestHandler):
@@ -48,6 +59,22 @@ class MyServer(BaseHTTPRequestHandler):
             elif url.endswith(".css"):
                 mimetype='text/css'
                 sendReply = True
+            elif url.startswith("/power_set.do"):
+                mimetype='text/html'
+                replyString='OK'
+                sendReply = False
+                pBase = params.get(P_BASE)
+                pId = params.get(P_ID)
+                pState = params.get(P_STATE)
+                pBase = int(pBase[0]) if pBase else None
+                pId = int(pId[0]) if pId else None
+                pState = bool(pState[0]) if pState else None
+                rfpower.switch(pBase,pId,pState)
+            elif url.startswith("/power_get.do"):
+                mimetype='application/json'
+                color = ola_color.get_color()
+                replyString=json.dumps({'color':color})
+                sendReply = False
             elif url.startswith("/color_set.do"):
                 mimetype='text/html'
                 replyString='OK'
