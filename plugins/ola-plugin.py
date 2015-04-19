@@ -25,7 +25,10 @@ class OlaPlugin(ServerPlugin):
         self.wrapper = None
         
         # restore last setting
-        self.lastR,self.lastG,self.lastB = storage.load_color()
+        data = storage.load_color()
+        self.lastR = data[ATTR_RED]
+        self.lastG = data[ATTR_GREEN]
+        self.lastB = data[ATTR_BLUE]
         self.send_color(lastR,lastG,lastB)
     
     def stop_wrapper(self,state):
@@ -62,4 +65,4 @@ class OlaPlugin(ServerPlugin):
         self.lastR = r
         self.lastG = g
         self.lastB = b
-        storage.save_color(r,g,b)
+        storage.save_state()
