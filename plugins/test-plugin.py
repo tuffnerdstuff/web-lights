@@ -1,6 +1,5 @@
-from yapsy.IPlugin import IPlugin
+from plugins.server_plugin import ServerPlugin
 
-class PluginOne(IPlugin):
+class TestPlugin(ServerPlugin):
+	pass
 	
-	def hello(self):
-		print "Hallo testplugin"

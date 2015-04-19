@@ -1,36 +1,31 @@
 #!/usr/bin/env python
+
 from os import curdir, sep, path
-import time, json, sys
+import time, json, sys, re
 
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
-from plugins.ola_color import ola_color_dummy as ola_color
-from plugins.rfpower import rfpower as rfpower
 from urlparse import urlparse, parse_qs
+from plugin_system import ServerPluginManager as PM
 
 
 HOST = ""
 PORT = 9000
 PARAM_ACTION = "action"
 
-C_RED = "r"
-C_GREEN = "g"
-C_BLUE = "b"
-C_ACTION = "color"
-C_ACTION = "color"
-
-P_BASE = "base"
-P_ID = "id"
-P_STATE = "state"
-P_ACTION = "rfpower"
-
 ROOT = path.dirname(path.realpath(sys.argv[0]))
+pm = None
 
 class MyServer(BaseHTTPRequestHandler):
+        
+
     def do_GET(self):
         
         # parse params
         url = self.path
-        params = parse_qs(urlparse(url).query)
+        parsed_url = urlparse(url)
+        params = parse_qs(parsed_url.query)
+        path = parsed_url.path
+        print("PATH %s"%path)
     
         # show webinterface
         if url == "/":
@@ -59,17 +54,28 @@ class MyServer(BaseHTTPRequestHandler):
             elif url.endswith(".css"):
                 mimetype='text/css'
                 sendReply = True
-            elif url.startswith("/power_set.do"):
+            elif url.endswith(".hello"):
                 mimetype='text/html'
-                replyString='OK'
                 sendReply = False
-                pBase = params.get(P_BASE)
-                pId = params.get(P_ID)
-                pState = params.get(P_STATE)
-                pBase = int(pBase[0]) if pBase else None
-                pId = int(pId[0]) if pId else None
-                pState = bool(pState[0]) if pState else None
-                rfpower.switch(pBase,pId,pState)
+                plugin_name = self.parse_plugin_name(url,'hello')
+                plugin = pm.get_plugin(plugin_name)
+                replyString=plugin.hello()
+                
+            elif path.endswith(".set"):
+                mimetype='text/html'
+                sendReply = False
+                plugin_name = self.parse_plugin_name(url,'set')
+                plugin = pm.get_plugin(plugin_name)
+                plugin.set(params)
+                replyString="%s.set: OK"%plugin_name
+                
+            elif path.endswith(".get"):
+                mimetype='application/json'
+                plugin_name = self.parse_plugin_name(url,'get')
+                plugin = pm.get_plugin(plugin_name)
+                replyString=json.dumps(plugin.get())
+                sendReply = False
+
             elif url.startswith("/power_get.do"):
                 mimetype='application/json'
                 color = ola_color.get_color()
@@ -115,7 +121,9 @@ class MyServer(BaseHTTPRequestHandler):
 
         except IOError:
             self.send_error(404,'File Not Found: %s (Root: %s)' % (self.path,ROOT))
-        
+    
+    def parse_plugin_name(self,url,mode):
+        return re.match(("/(.*?)\.%s"%mode),url).group(1)
 
 
     def set_color(self,r,g,b):
@@ -123,6 +131,7 @@ class MyServer(BaseHTTPRequestHandler):
         ola_color.SendDMXFrame(r,g,b)
 
 myServer = HTTPServer((HOST, PORT), MyServer)
+pm = PM()
 print(time.asctime(), "Server Starts - %s:%s" % (HOST, PORT))
 
 try:

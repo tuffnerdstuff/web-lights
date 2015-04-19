@@ -1,10 +1,10 @@
 from plugins.server_plugin import ServerPlugin
 
 class DummyPlugin(ServerPlugin):
-	def get():
+	def get(self):
 		print("DummyPlugin.get")
 		return []
 	
-	def set(values):
+	def set(self,values):
 		print("DummyPlugin.set %s" % values)
 	

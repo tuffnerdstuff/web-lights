@@ -1,16 +1,19 @@
 from yapsy.PluginManager import PluginManager, PluginFileLocator
 from yapsy.PluginFileLocator import PluginFileAnalyzerMathingRegex
-from yapsy.IPlugin import IPlugin
-import re
+import re, os, sys
 
-PLUGIN_PATH='plugins'
+ROOT = os.path.dirname(os.path.realpath(sys.argv[0]))
+PLUGIN_PATH=os.path.join(ROOT,"plugins")
 PLUGIN_SUFFIX='-plugin'
 PLUGIN_EXT='\.py'
+PLUGIN_DUMMY_NAME='dummy'
+
 
 class ServerPluginManager():
 	def __init__(self):
 		self.plugin_manager = PluginManager(plugin_locator=PluginFileLocator(analyzers=[PluginFileAnalyzerMathingRegex("regex_matcher",('^.*%s%s$' % (PLUGIN_SUFFIX,PLUGIN_EXT)))]))
 		self.plugin_manager.setPluginPlaces([PLUGIN_PATH])
+		self.dummy_plugin = None
 		self.plugin_map = {}
 		
 		self.init_plugins()
@@ -24,15 +27,23 @@ class ServerPluginManager():
 		self.plugin_manager.collectPlugins()
 		for plugin in self.plugin_manager.getAllPlugins():
 			name = re.sub(PLUGIN_SUFFIX,'',plugin.name)
-			self.plugin_manager.activatePluginByName(plugin.name)
-			self.plugin_map[name] = plugin.plugin_object
+			print(name)
+			if name == PLUGIN_DUMMY_NAME:
+				self.dummy_plugin = plugin
+			else:
+				self.plugin_manager.activatePluginByName(plugin.name)
+				self.plugin_map[name] = plugin
 	
-	def get_plugin(self,plugin_name):
+	def get_plugin_info(self,name):
 		try:
-			return self.plugin_map[plugin_name]
+			return self.plugin_map[name]
 		except Exception:
-			return None
-				
-p = ServerPluginManager()
-p.get_plugin("test").hello()
+			return self.dummy_plugin
 			
+	def get_plugin(self,name):
+		return self.get_plugin_info(name).plugin_object
+		
+if __name__ == "__main__":	
+	print("STARTING")	
+	p = ServerPluginManager()
+	print p.get_plugin("pups").hello()
