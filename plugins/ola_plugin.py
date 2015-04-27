@@ -13,20 +13,15 @@ ATTR_BLUE = 'b'
 
 class OlaPlugin(ServerPlugin):
 
-
     def __init__(self):
         # instance variables
-        self.lastR = 0
-        self.lastG = 0
-        self.lastB = 0
         self.wrapper = None
-
-        # restore last setting
-        self.load_state()
-        self.send_color(self.lastR,self.lastG,self.lastB)
 
     def stop_wrapper(self,state):
         self.wrapper.Stop()
+
+    def get_color(self):
+        return ( int(self.data[ATTR_RED][0]), int(self.data[ATTR_GREEN][0]), int(self.data[ATTR_BLUE][0]) )
 
     def send_color(self,r,g,b):
         self.wrapper = ClientWrapper()
@@ -46,24 +41,16 @@ class OlaPlugin(ServerPlugin):
         self.wrapper.Client().SendDmx(UNIVERSE, data, self.stop_wrapper)
 
 
-
-    def get(self):
-        return {ATTR_RED: self.lastR, ATTR_GREEN : self.lastG, ATTR_BLUE : self.lastB}
-
-    def set(self, values):
+    def set_action(self):
     	
-	r = int(values[ATTR_RED][0])
-	g = int(values[ATTR_GREEN][0])
-	b = int(values[ATTR_BLUE][0])
+        r,g,b = self.get_color()
 
         # send color to DMX
         self.send_color(r,g,b)
-
-        # store color
-        self.lastR = r
-        self.lastG = g
-        self.lastB = b
-        self.save_state()
+        
+    def init_action(self):
+        # send last light data to device
+        sel.set_action()
 
 if __name__=="__main__":
     o = OlaPlugin()
