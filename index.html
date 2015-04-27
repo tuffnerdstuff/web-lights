@@ -46,13 +46,13 @@ $(window).resize(function ()
 
 function set_color(r,g,b)
 {
-  $.get("/server.set?r=" + r + "&g=" + g + "&b=" + b);
+  $.get("/ola.set?r=" + r + "&g=" + g + "&b=" + b);
 //  set_colorwheel_color(r,g,b); // prevents "skipping" of cursor when value is loaded
 }
 
 function get_color()
 {
-  $.getJSON("/server.get", function(data){
+  $.getJSON("/ola.get", function(data){
 	set_colorwheel_color(parseInt(data['r']),parseInt(data['g']),parseInt(data['b']));
   });
 }

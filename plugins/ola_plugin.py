@@ -14,6 +14,8 @@ ATTR_BLUE = 'b'
 class OlaPlugin(ServerPlugin):
 
     def __init__(self):
+        super(OlaPlugin,self).__init__()
+        
         # instance variables
         self.wrapper = None
 
@@ -50,7 +52,7 @@ class OlaPlugin(ServerPlugin):
         
     def init_action(self):
         # send last light data to device
-        sel.set_action()
+        self.set_action()
 
 if __name__=="__main__":
     o = OlaPlugin()
