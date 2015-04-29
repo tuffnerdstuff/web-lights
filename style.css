@@ -1,0 +1,38 @@
+.rfpower {
+	display: inline-block;
+	height: auto;
+	width:100%;
+	font-size:4vw;
+}
+
+.rfpower .label {
+	color: black;
+	background-color:white;
+	display: block;
+	text-align:center;
+	
+}
+
+.rfpower a {
+	background-color: black;
+	padding: 0em;
+	display: inline-block;
+	min-width: 46%;
+	min-height: 2em;
+	text-align:center;
+	vertical-align: center;
+}
+
+.on {
+	color: green;
+	float:left;
+}
+
+.off {
+	color: red;
+	float:right;
+}
+
+#colorwheel {
+	margin: auto;
+}
