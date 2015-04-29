@@ -1,17 +1,24 @@
+body {
+	font-size:4vw;
+	font-family: Roboto, Helvetica, sans-serif
+}
+
 .rfpower {
 	display: inline-block;
 	height: auto;
 	width:100%;
-	font-size:4vw;
+	
 }
 
-.rfpower .label {
+.label {
 	color: black;
 	background-color:white;
 	display: block;
 	text-align:center;
 	
 }
+
+
 
 .rfpower a {
 	background-color: black;
@@ -20,7 +27,9 @@
 	min-width: 46%;
 	min-height: 2em;
 	text-align:center;
-	vertical-align: center;
+	text-decoration: none;
+	vertical-align: bottom;
+	line-height:100%;
 }
 
 .on {
@@ -31,6 +40,21 @@
 .off {
 	color: red;
 	float:right;
+}
+
+#color_picker {
+	width:100%; 
+	margin-left:auto;
+	margin-right:auto;
+}
+
+#color_controls {
+	margin-top: 0.5em;
+}
+
+#powerbutton {
+	position:absolute;
+	z-index:100;
 }
 
 #colorwheel {
