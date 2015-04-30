@@ -31,7 +31,7 @@ def save(name,data):
     settings_path = get_save_path(name+".conf")
     try:
         f = open(settings_path,"w")
-        json.dump(data,f)
+        json.dump(data,f,indent=4,sort_keys=True)
         f.close()
         print("[OK] Stored values for %s in %s" % (name,settings_path))
     except:

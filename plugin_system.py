@@ -6,7 +6,7 @@ ROOT = os.path.dirname(os.path.realpath(sys.argv[0]))
 PLUGIN_PATH=os.path.join(ROOT,"plugins")
 PLUGIN_SUFFIX='_plugin'
 PLUGIN_EXT='\.py'
-PLUGIN_DUMMY_NAME='dummy'
+PLUGIN_DUMMY_NAME='server'
 
 
 class ServerPluginManager():

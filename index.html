@@ -15,6 +15,7 @@
 
 
 <div id="switches">
+<!--
 	<div class="rfpower" id="rf1">
 		<span class="label">Regal</span>
 		<a class="on" href='javascript:set_power("11011","1","true")'>ON</a>
@@ -32,6 +33,7 @@
 		<a class="on" href='javascript:set_power("11011","3","true")'>ON</a>
 		<a class="off" href='javascript:set_power("11011","3","false")'>OFF</a>
 	</div>
+-->
 </div>
 
 <div id="color_picker">
@@ -45,29 +47,64 @@
 </div>
 
 <script type="text/javascript" charset="utf-8">
+// Global
+
+$(document).ready(function () 
+{
+	init_ola();
+	init_power();
+	
+});
+
+$(window).resize(function () 
+{
+	init_ola();
+});
+
 
 // RFPOWER
+
+function init_power()
+{
+	get_power();
+}
+
 function set_power(base,unit,state)
 {
 
 	$.get("rfpower.set?base="+base+"&unit="+unit+"&state="+state);
 }
 
+function get_power()
+{
+  $.getJSON("/rfpower.get", function(data){
+	if(data)
+	{
+		var units = data['units'];
+		var cont = $('#switches');
+		cont.empty();
+		for (i = 0; i < units.length; i++)
+		{
+			var unit = units[i];
+			rfcont = $('<div class="rfpower"></div>');
+
+			rfcont.append('<span class="label">'+unit.name+'</span>');
+			rfcont.append('<a class="on" href=\'javascript:set_power("'+unit.base+'","'+unit.unit+'","true")\'>ON</a>');
+			rfcont.append('<a class="off" href=\'javascript:set_power("'+unit.base+'","'+unit.unit+'","false")\'>OFF</a>');
+
+			cont.append(rfcont);
+				
+		}
+		//alert(data['units']);
+	}
+  });
+}
+
 // OLA
 
 var cw;
 
-$(document).ready(function () 
-{
-	init();
-	
-	
-});
 
-$(window).resize(function () 
-{
-	init();
-});
 
 function set_color(r,g,b)
 {
@@ -87,7 +124,7 @@ function set_colorwheel_color(r,g,b)
 	cw.color("rgb(" + r + "," + g + "," + b + ")");
 }
 
-function init()
+function init_ola()
 {
   var size = Math.min($(window).width(), $(window).height()) * 0.9
   $("#colorwheel").empty();

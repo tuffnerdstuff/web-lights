@@ -17,11 +17,14 @@ class ServerPlugin(IPlugin):
         
     def set(self,data):
         print("%s.set %s" % (self.name,data))
-        self.data = data
+        self.set_state(data)
         self.save_state()
-        self.set_action()
+        self.set_action(data)
+
+    def set_state(self, data):
+        self.data = data
         
-    def set_action(self):
+    def set_action(self,data):
         pass
     
     def save_state(self):
