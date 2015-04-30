@@ -28,7 +28,9 @@ class RFPowerPlugin(ServerPlugin):
                 break
 
     def set_action(self,data):
-        base,unit,state = data
+        base = data[ATTR_BASE][0]
+        unit = data[ATTR_UNIT][0]
+        state = data[ATTR_STATE][0]
         print("[%s] base=%s unit=%s state=%s "%(self.name, base, unit, state))
         subprocess.call(["sudo",self.send_path,base,unit,state])
         
