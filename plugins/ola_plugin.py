@@ -43,7 +43,7 @@ class OlaPlugin(ServerPlugin):
         self.wrapper.Client().SendDmx(UNIVERSE, data, self.stop_wrapper)
 
 
-    def set_action(self):
+    def set_action(self,data):
     	
         r,g,b = self.get_color()
 
