@@ -130,6 +130,11 @@ class MyServer(BaseHTTPRequestHandler):
         print("Setting color to: (%i,%i,%i)" % (r, g, b))
         ola_color.SendDMXFrame(r,g,b)
 
+
+if len(sys.argv) == 2:
+    ROOT = sys.argv[1]
+else:
+    ROOT = path.dirname(path.realpath(sys.argv[0]))
 myServer = HTTPServer((HOST, PORT), MyServer)
 pm = PM()
 print(time.asctime(), "Server Starts - %s:%s" % (HOST, PORT))
