@@ -28,7 +28,7 @@ class ServerPluginManager():
 		for plugin in self.plugin_manager.getAllPlugins():
 			name = re.sub(PLUGIN_SUFFIX,'',plugin.name)
 			# set plugin name
-			plugin.plugin_object.set_name(name)
+			plugin.plugin_object.init(name)
 			print(name)
 			if name == PLUGIN_DUMMY_NAME:
 				self.dummy_plugin = plugin

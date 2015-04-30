@@ -4,9 +4,8 @@ import storage
 class ServerPlugin(IPlugin):
     
     def __init__(self):
-        self.name = self.__class__.__name__
+        self.name = "dummy" 
         self.data = {}
-        
         
     def hello(self):
         return "Hello, my name is %s!" % self.name
@@ -31,12 +30,12 @@ class ServerPlugin(IPlugin):
         storage.save(self.name, self.get())
         
     def load_state(self):
-        print("load %s" % self.name)
+        print("%s.load" % self.name)
         data = storage.load(self.name)
         if data:
             self.data = data
             
-    def set_name(self,name):
+    def init(self,name):
         self.name = name
         self.load_state()
         self.init_action()
