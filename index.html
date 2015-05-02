@@ -13,7 +13,9 @@
 </head>
 <body style="background-color:#5E5E5E">
 
-
+<div id="scenes">
+    
+</div>
 
 <div id="switches">
 <!--
@@ -52,8 +54,10 @@
 
 $(document).ready(function () 
 {
-	init_ola();
-	init_power();
+	init_scenes();
+    init_power();
+    init_ola();
+	
 	
 });
 
@@ -62,6 +66,40 @@ $(window).resize(function ()
 	init_ola();
 });
 
+// SCENES
+function init_scenes()
+{
+    get_scenes();
+}
+
+function set_scene(name)
+{
+
+	$.get("scenes.set?name="+name);
+}
+
+function get_scenes()
+{
+  $.getJSON("/scenes.get", function(data){
+	if(data)
+	{
+		var scenes = data['scenes'];
+		var cont = $('#scenes');
+		cont.empty();
+		for (i = 0; i < scenes.length; i++)
+		{
+			var scene = scenes[i];
+			scont = $('<div class="scene"></div>');
+
+			scont.append('<a href=\'javascript:set_scene("'+ scene.name +'")\' class="label">'+scene.name+'</span>');
+
+			cont.append(scont);
+				
+		}
+		//alert(data['units']);
+	}
+  });
+}
 
 // RFPOWER
 

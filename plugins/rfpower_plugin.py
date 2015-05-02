@@ -11,7 +11,6 @@ class RFPowerPlugin(ServerPlugin):
 
     def __init__(self):
         super(RFPowerPlugin,self).__init__()
-        import os
         path = os.path.abspath(__file__)
         dir_path = os.path.dirname(path)
         self.send_path = os.path.join(dir_path,'send')

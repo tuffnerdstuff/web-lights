@@ -4,7 +4,8 @@ import storage
 class ServerPlugin(IPlugin):
     
     def __init__(self):
-        self.name = "dummy" 
+        self.name = "dummy"
+        self.plugin_manager = None
         self.data = {}
         
     def hello(self):
@@ -35,8 +36,9 @@ class ServerPlugin(IPlugin):
         if data:
             self.data = data
             
-    def init(self,name):
+    def init(self,name,plugin_manager):
         self.name = name
+        self.plugin_manager = plugin_manager
         self.load_state()
         self.init_action()
         

@@ -45,7 +45,7 @@ def load(name):
         f.close()
         return data
     except:
-        print("[ERROR] Could not load values for %s" % name)
+        print("[ERROR] Could not load values for %s from %s" % (name,settings_path))
         return None
         
 def get_save_path():
