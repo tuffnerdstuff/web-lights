@@ -13,7 +13,7 @@
 </head>
 <body style="background-color:#5E5E5E">
 
-<a class="Test Save" href='javascript:save_scene("Test Scene Yall")'>ON</a>
+<a href='javascript:save_scene("Test Scene Yall")'>Test Save</a>
 
 <div id="scenes">
     
@@ -83,7 +83,7 @@ function set_scene(name)
 function save_scene(name)
 {
 
-	$.get("scenes.set?save=ola,rfpower");
+	$.get("scenes.set?save="+name+"&plugin=ola&plugin=rfpower");
 }
 
 function get_scenes()

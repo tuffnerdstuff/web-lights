@@ -38,18 +38,24 @@ class ScenePlugin(ServerPlugin):
             states = []
             
             for plugin in plugins:
-                plugin_obj = self.plugin_manager.get_plugin(plugin_name)
+                plugin_obj = self.plugin_manager.get_plugin(plugin)
                 if plugin_obj:
                     states.append({ATTR_PLUGIN : plugin, ATTR_DATA : plugin_obj.get()})
             
             new_scenes = []
+            new_scene = {ATTR_NAME:scenename,ATTR_STATES:states}
+            scene_updated = False
             for scene in self.data[SECT_SCENES]:
                 if scene[ATTR_NAME] == scenename:
-                    new_scenes.append({ATTR_NAME:scenename,ATTR_STATES:states})
+                    new_scenes.append(new_scene)
+		    scene_updated = True
                 else:
                     new_scenes.append(scene)
-                    
-            self.data = {SECT_SCENES:new_scenes}
+
+            if not scene_updated:
+                new_scenes.append(new_scene)
+            
+	    self.data = {SECT_SCENES:new_scenes}
             self.save_state()
                     
                 
