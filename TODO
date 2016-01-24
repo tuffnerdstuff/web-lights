@@ -1,0 +1,7 @@
+Redesign plugin data workflow.
+
+plugin must override:
+
+parse_state(data) --> parse data (as saved on disk) and set internal state (or just store data object)
+parse_action(data) --> parse action data (from webinterface) --> change internal state
+exec_state() --> realize internal state

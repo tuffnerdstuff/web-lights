@@ -80,10 +80,18 @@ function set_scene(name)
 	$.get("scenes.set?load="+name);
 }
 
-function save_scene(name)
+function delete_scene(name)
 {
 
-	$.get("scenes.set?save="+name+"&plugin=ola&plugin=rfpower");
+	$.get("scenes.set?delete="+name);
+    get_scenes();
+}
+
+function save_scene()
+{
+    var sceneName = window.prompt("Please enter a scene name","");
+	$.get("scenes.set?save="+sceneName+"&plugin=ola&plugin=rfpower");
+    get_scenes();
 }
 
 function get_scenes()
@@ -94,12 +102,21 @@ function get_scenes()
 		var scenes = data['scenes'];
 		var cont = $('#scenes');
 		cont.empty();
+        cont.append('<span class="label">Scenes</span>');
+        cont.append(('<div class="scene"><span class="label"><a href=\'javascript:save_scene()\' >+Save Scene+</a></span></div>'));
+        
+        
 		for (i = 0; i < scenes.length; i++)
 		{
 			var scene = scenes[i];
-			scont = $('<div class="scene"></div>');
+			var scont = $('<div class="scene"></div>');
+            var scont_row = $('<span class="label"></span>');
+            
+            
 
-			scont.append('<a href=\'javascript:set_scene("'+ scene.name +'")\' class="label">'+scene.name+'</span>');
+			scont_row.append('<a href=\'javascript:set_scene("'+ scene.name +'")\' >'+scene.name+'</a>');
+            scont_row.append('<a href=\'javascript:delete_scene("'+ scene.name +'")\' > (delete)</a>');
+            scont.append(scont_row);
 
 			cont.append(scont);
 				

@@ -3,6 +3,7 @@ from plugins.server_plugin import ServerPlugin
 SECT_SCENES = "scenes"
 ATTR_LOADACTION = "load"
 ATTR_SAVEACTION = "save"
+ATTR_DELACTION = "delete"
 ATTR_NAME = "name"
 ATTR_STATES = "states"
 ATTR_PLUGIN = "plugin"
@@ -55,10 +56,21 @@ class ScenePlugin(ServerPlugin):
             if not scene_updated:
                 new_scenes.append(new_scene)
             
-	    self.data = {SECT_SCENES:new_scenes}
+            self.data = {SECT_SCENES:new_scenes}
             self.save_state()
-                    
                 
+        elif (ATTR_DELACTION in data):
+            scenename = data[ATTR_DELACTION][0]
+                    
+            new_scenes = []
+
+            # iterate over scenes and leave out deleted scene
+            for scene in self.data[SECT_SCENES]:
+                if scene[ATTR_NAME] != scenename:
+                    new_scenes.append(scene)
+            
+            self.data = {SECT_SCENES:new_scenes}
+            self.save_state()
                 
                 
     def activate_scene(self,states):
