@@ -12,10 +12,15 @@ ATTR_DATA = "data"
 class ScenePlugin(ServerPlugin):
     
     def set_state(self, data):
+        print("SCENE SET")
         # We do not have to keep track of any state
         pass
     
     def set_action(self,data):
+        
+        # init empty data
+        if not SECT_SCENES in self.data:
+            self.data = {SECT_SCENES:[]}
         
         if (ATTR_LOADACTION in data):
         
@@ -41,6 +46,7 @@ class ScenePlugin(ServerPlugin):
             for plugin in plugins:
                 plugin_obj = self.plugin_manager.get_plugin(plugin)
                 if plugin_obj:
+                    # TODO: Somehow copying the data gets a reference to the data object
                     states.append({ATTR_PLUGIN : plugin, ATTR_DATA : plugin_obj.get()})
             
             new_scenes = []
@@ -49,7 +55,7 @@ class ScenePlugin(ServerPlugin):
             for scene in self.data[SECT_SCENES]:
                 if scene[ATTR_NAME] == scenename:
                     new_scenes.append(new_scene)
-		    scene_updated = True
+                    scene_updated = True
                 else:
                     new_scenes.append(scene)
 

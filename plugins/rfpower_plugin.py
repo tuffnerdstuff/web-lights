@@ -17,8 +17,6 @@ class RFPowerPlugin(ServerPlugin):
 
     def set_state(self,data):
         
-        
-        
         # TODO: this is bad, change plugin workflow
         # We set data for all units (e.g. persistence)
         if SECT_UNITS in data:
@@ -37,6 +35,8 @@ class RFPowerPlugin(ServerPlugin):
                     # Set unit state
                     unit[ATTR_STATE][0] = data[ATTR_STATE][0]
                     break
+        
+        import pdb; pdb.set_trace()
 
     def set_action(self,data):
         
@@ -52,5 +52,5 @@ class RFPowerPlugin(ServerPlugin):
         unit = data[ATTR_UNIT][0]
         state = "1" if "true" == data[ATTR_STATE][0] else "0"
         print("[%s] base=%s unit=%s state=%s "%(self.name, base, unit, state))
-        subprocess.call(["sudo",self.send_path,base,unit,state])
+        #subprocess.call(["sudo",self.send_path,base,unit,state])
         

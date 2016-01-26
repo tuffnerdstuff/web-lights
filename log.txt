@@ -1,0 +1,33 @@
+rfpower.load
+rfpower
+server.load
+server
+test.load
+test
+('Sun Jan 24 19:04:56 2016', 'Server Starts - :9000')
+PATH /
+Serving static file: /home/stefan/Development/web-lights//index.html
+PATH /lib/jquery-1.11.1.min.js
+Serving static file: /home/stefan/Development/web-lights//lib/jquery-1.11.1.min.js
+PATH /lib/raphael-min.js
+Serving static file: /home/stefan/Development/web-lights//lib/raphael-min.js
+PATH /lib/colorwheel.js
+Serving static file: /home/stefan/Development/web-lights//lib/colorwheel.js
+PATH /style.css
+Serving static file: /home/stefan/Development/web-lights//style.css
+PATH /gfx/power.png
+Serving static file: /home/stefan/Development/web-lights//gfx/power.png
+PATH /scenes.get
+server.get
+PATH /rfpower.get
+rfpower.get
+PATH /ola.get
+server.get
+PATH /scenes.set
+server.set {'save': ['blib'], 'plugin': ['ola', 'rfpower']}
+server.save
+server.get
+[OK] Stored values for server in /home/stefan/.web-lights/server.conf
+PATH /scenes.get
+server.get
+('Sun Jan 24 19:05:08 2016', 'Server Stops - :9000')

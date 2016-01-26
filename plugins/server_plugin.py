@@ -1,5 +1,5 @@
 from yapsy.IPlugin import IPlugin
-import storage
+import storage, copy
 
 class ServerPlugin(IPlugin):
     
@@ -13,7 +13,7 @@ class ServerPlugin(IPlugin):
         
     def get(self):
         print("%s.get" % self.name)
-        return self.data
+        return copy.deepcopy(self.data)
         
     def set(self,data):
         print("%s.set %s" % (self.name,data))
@@ -28,6 +28,7 @@ class ServerPlugin(IPlugin):
         pass
     
     def save_state(self):
+        print("%s.save data=%s" % (self.name, self.get()))
         storage.save(self.name, self.get())
         
     def load_state(self):
