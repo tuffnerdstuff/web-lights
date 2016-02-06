@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from os import curdir, sep, path
-import time, json, sys, re
+import time, json, sys, re, logging
 
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from urlparse import urlparse, parse_qs
@@ -14,6 +14,7 @@ PARAM_ACTION = "action"
 
 ROOT = path.dirname(path.realpath(sys.argv[0]))
 pm = None
+logging.basicConfig()
 
 class MyServer(BaseHTTPRequestHandler):
         
@@ -66,37 +67,16 @@ class MyServer(BaseHTTPRequestHandler):
                 sendReply = False
                 plugin_name = self.parse_plugin_name(url,'set')
                 plugin = pm.get_plugin(plugin_name)
-                plugin.set(params)
+                plugin.do(params)
                 replyString="%s.set: OK"%plugin_name
                 
             elif path.endswith(".get"):
                 mimetype='application/json'
                 plugin_name = self.parse_plugin_name(url,'get')
                 plugin = pm.get_plugin(plugin_name)
-                replyString=json.dumps(plugin.get())
+                replyString=json.dumps(plugin.get_state())
                 sendReply = False
 
-            elif url.startswith("/power_get.do"):
-                mimetype='application/json'
-                color = ola_color.get_color()
-                replyString=json.dumps({'color':color})
-                sendReply = False
-            elif url.startswith("/color_set.do"):
-                mimetype='text/html'
-                replyString='OK'
-                sendReply = False
-                rP = params.get(C_RED)
-                gP = params.get(C_GREEN)
-                bP = params.get(C_BLUE)
-                r = int(rP[0]) if rP else 0
-                g = int(gP[0]) if gP else 0
-                b = int(bP[0]) if bP else 0
-                self.set_color(r,g,b)
-            elif url.startswith("/color_get.do"):
-                mimetype='application/json'
-                color = ola_color.get_color()
-                replyString=json.dumps({'color':color})
-                sendReply = False
             else: # Unsupported Media Type
                 self.send_error(415,'File has unsopported media type: %s' % self.path)
                 return
