@@ -11,13 +11,13 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 
 </head>
-<body style="background-color:#5E5E5E">
+<body style="background-color:#0A2644">
 
-<div id="scenes">
+<div id="scenes" class="group">
     
 </div>
 
-<div id="switches">
+<div id="switches" class="group">
 <!--
     <div class="rfpower" id="rf1">
         <span class="label">Regal</span>
@@ -39,9 +39,9 @@
 -->
 </div>
 
-<div id="color_picker">
+<div id="color_picker" class="group">
 
-    <span class="label">Sofa RGB</span>
+    <span class="section_start">RGB Bar</span>
     <div id="color_controls">
         <img id="powerbutton" src="gfx/power.png"/>
         <div id="colorwheel" ></div>
@@ -101,10 +101,9 @@ function get_scenes()
     
     var cont = $('#scenes');
     cont.empty();
-    cont.append('<span class="label">Scenes</span>');
-    cont.append(('<div class="scene"><span class="label"><a href=\'javascript:save_scene()\' >+Save Scene+</a></span></div>'));
-
+    cont.append('<span class="section_start">Scenes</span>');
     
+       
     if(data)
     {
 
@@ -114,13 +113,13 @@ function get_scenes()
         for (i = 0; i < scenes.length; i++)
         {
             var scene = scenes[i];
-            var scont = $('<div class="scene"></div>');
+            var scont = $('<div class="row"></div>');
             var scont_row = $('<span class="label"></span>');
             
             
-
-            scont_row.append('<a href=\'javascript:set_scene("'+ scene.name +'")\' >'+scene.name+'</a>');
-            scont_row.append('<a href=\'javascript:delete_scene("'+ scene.name +'")\' > (delete)</a>');
+            scont_row.append('<span class="label">'+scene.name+'</span>');
+            scont_row.append('<a class="button on" href=\'javascript:set_scene("'+ scene.name +'")\' >ON</a>');
+            scont_row.append('<a class="button off" href=\'javascript:delete_scene("'+ scene.name +'")\' >DELETE</a>');
             scont.append(scont_row);
 
             cont.append(scont);
@@ -128,6 +127,13 @@ function get_scenes()
         }
 
     }
+    
+    // Add Scene Button
+    var add_scene = $('<div class="row"></div>');
+    add_scene.append('<span class="label">[New Scene]</span>');
+    add_scene.append('<div><a class="button on fullwidth" href=\'javascript:save_scene()\' >ADD</a></div>');
+    cont.append(add_scene);
+    
   });
 }
 
@@ -152,14 +158,17 @@ function get_power()
         var units = data['units'];
         var cont = $('#switches');
         cont.empty();
+        
+        cont.append('<span class="section_start">RF Sockets</span>');
+        
         for (i = 0; i < units.length; i++)
         {
             var unit = units[i];
-            rfcont = $('<div class="rfpower"></div>');
+            rfcont = $('<div class="row"></div>');
 
             rfcont.append('<span class="label">'+unit.name+'</span>');
-            rfcont.append('<a class="on" href=\'javascript:set_power("'+unit.name+'","'+unit.base+'","'+unit.unit+'","true")\'>ON</a>');
-            rfcont.append('<a class="off" href=\'javascript:set_power("'+unit.name+'","'+unit.base+'","'+unit.unit+'","false")\'>OFF</a>');
+            rfcont.append('<a class="button on" href=\'javascript:set_power("'+unit.name+'","'+unit.base+'","'+unit.unit+'","true")\'>ON</a>');
+            rfcont.append('<a class="button off" href=\'javascript:set_power("'+unit.name+'","'+unit.base+'","'+unit.unit+'","false")\'>OFF</a>');
 
             cont.append(rfcont);
                 

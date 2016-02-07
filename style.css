@@ -3,34 +3,50 @@ body {
 	font-family: Roboto, Helvetica, sans-serif
 }
 
-.rfpower {
+.row {
 	display: inline-block;
 	height: auto;
 	width:100%;
 	
 }
 
-.label {
-	color: black;
-	background-color:white;
+.group {
+    border-radius: 0.3em;
+    background-color:#2B4C6F;
+    padding-bottom: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+.section_start {
+    border-radius: 0.3em 0.3em 0 0;
+	color: #010D19;
+    background-color:#607C9A;
 	display: block;
 	text-align:center;
 	text-decoration: none;
-	
 }
 
+.label {
+	color: #010D19;
+	background-color:#BAC8D7;
+	display: block;
+	text-align:center;
+	text-decoration: none;
+}
 
-
-.rfpower a {
-	background-color: black;
-	padding: 0em;
+.button {
+	background-color: #010D19;
+	padding: 0.6em 0 0 0;
 	display: inline-block;
 	min-width: 46%;
 	min-height: 2em;
 	text-align:center;
 	text-decoration: none;
-	vertical-align: bottom;
 	line-height:100%;
+}
+
+.fullwidth {
+    min-width:100%;
 }
 
 .on {
@@ -56,6 +72,7 @@ body {
 #powerbutton {
 	position:absolute;
 	z-index:100;
+    margin-left: 0.5em;
 }
 
 #colorwheel {
