@@ -1,4 +1,5 @@
 from plugins.server_plugin import ServerPlugin
+import copy
 
 SECT_SCENES = "scenes"
 ATTR_LOADACTION = "load"
@@ -27,7 +28,9 @@ class ScenePlugin(ServerPlugin):
             # scene data-scheme: "scenes": [ { "name": "scenename", "states" : { "plugin": "pluginname1", "data": {... data ...} }, ...} ]
             for scene in self.state[SECT_SCENES]:
                 if scene[ATTR_NAME] == name:
-                    self.activate_scene(scene[ATTR_STATES])
+                    # we need a deep copy of the states, otherwise our scene states and their plugin states will be linked
+                    state_to_load = copy.deepcopy(scene[ATTR_STATES])
+                    self.activate_scene(state_to_load)
                     break
                     
         elif (ATTR_SAVEACTION in data):
