@@ -88,7 +88,10 @@ function delete_scene(name)
 function save_scene()
 {
     var sceneName = window.prompt("Please enter a scene name","");
-    $.get("scenes.set?save="+sceneName+"&plugin=ola&plugin=rfpower");
+    if (sceneName != undefined)
+    {
+        $.get("scenes.set?save="+sceneName.trim()+"&plugin=ola&plugin=rfpower");
+    }
     get_scenes();
 }
 
