@@ -19,6 +19,13 @@ class ServerPlugin(IPlugin):
     def _restore_state(self):
         print("%s._restore_state" % self.name)
         self.state = storage.load(self.name)
+        if not self.state:
+            self.state = {}
+
+    """ Saves the state of the plugin """
+    def _set_state(self,state):
+        print("%s._set_state" % self.name)
+        self.state = state
 
     """ Saves the state of the plugin """
     def _save_state(self):

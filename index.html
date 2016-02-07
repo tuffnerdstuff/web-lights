@@ -19,33 +19,33 @@
 
 <div id="switches">
 <!--
-	<div class="rfpower" id="rf1">
-		<span class="label">Regal</span>
-		<a class="on" href='javascript:set_power("11011","1","true")'>ON</a>
-		<a class="off" href='javascript:set_power("11011","1","false")'>OFF</a>
-	</div>
+    <div class="rfpower" id="rf1">
+        <span class="label">Regal</span>
+        <a class="on" href='javascript:set_power("11011","1","true")'>ON</a>
+        <a class="off" href='javascript:set_power("11011","1","false")'>OFF</a>
+    </div>
 
-	<div class="rfpower" id="rf2">
-		<span class="label">Sofa Tisch</span>
-		<a class="on" href='javascript:set_power("11011","2","true")'>ON</a>
-		<a class="off" href='javascript:set_power("11011","2","false")'>OFF</a>
-	</div>
+    <div class="rfpower" id="rf2">
+        <span class="label">Sofa Tisch</span>
+        <a class="on" href='javascript:set_power("11011","2","true")'>ON</a>
+        <a class="off" href='javascript:set_power("11011","2","false")'>OFF</a>
+    </div>
 
-	<div class="rfpower" id="rf3">
-		<span class="label">Esszimmer</span>
-		<a class="on" href='javascript:set_power("11011","3","true")'>ON</a>
-		<a class="off" href='javascript:set_power("11011","3","false")'>OFF</a>
-	</div>
+    <div class="rfpower" id="rf3">
+        <span class="label">Esszimmer</span>
+        <a class="on" href='javascript:set_power("11011","3","true")'>ON</a>
+        <a class="off" href='javascript:set_power("11011","3","false")'>OFF</a>
+    </div>
 -->
 </div>
 
 <div id="color_picker">
 
-	<span class="label">Sofa RGB</span>
-	<div id="color_controls">
-		<img id="powerbutton" src="gfx/power.png"/>
-		<div id="colorwheel" ></div>
-	</div>
+    <span class="label">Sofa RGB</span>
+    <div id="color_controls">
+        <img id="powerbutton" src="gfx/power.png"/>
+        <div id="colorwheel" ></div>
+    </div>
 
 </div>
 
@@ -54,16 +54,16 @@
 
 $(document).ready(function () 
 {
-	//init_scenes();
+    init_scenes();
     init_power();
     init_ola();
-	
-	
+    
+    
 });
 
 $(window).resize(function () 
 {
-	init_ola();
+    init_ola();
 });
 
 // SCENES
@@ -75,52 +75,56 @@ function init_scenes()
 function set_scene(name)
 {
 
-	$.get("scenes.set?load="+name);
+    $.get("scenes.set?load="+name);
 }
 
 function delete_scene(name)
 {
 
-	$.get("scenes.set?delete="+name);
+    $.get("scenes.set?delete="+name);
     get_scenes();
 }
 
 function save_scene()
 {
     var sceneName = window.prompt("Please enter a scene name","");
-	$.get("scenes.set?save="+sceneName+"&plugin=ola&plugin=rfpower");
+    $.get("scenes.set?save="+sceneName+"&plugin=ola&plugin=rfpower");
     get_scenes();
 }
 
 function get_scenes()
 {
   $.getJSON("/scenes.get", function(data){
-	if(data)
-	{
-		var scenes = data['scenes'];
-		var cont = $('#scenes');
-		cont.empty();
-        cont.append('<span class="label">Scenes</span>');
-        cont.append(('<div class="scene"><span class="label"><a href=\'javascript:save_scene()\' >+Save Scene+</a></span></div>'));
+    
+    var cont = $('#scenes');
+    cont.empty();
+    cont.append('<span class="label">Scenes</span>');
+    cont.append(('<div class="scene"><span class="label"><a href=\'javascript:save_scene()\' >+Save Scene+</a></span></div>'));
+
+    
+    if(data)
+    {
+
+ 
+        var scenes = data['scenes'];       
         
-        
-		for (i = 0; i < scenes.length; i++)
-		{
-			var scene = scenes[i];
-			var scont = $('<div class="scene"></div>');
+        for (i = 0; i < scenes.length; i++)
+        {
+            var scene = scenes[i];
+            var scont = $('<div class="scene"></div>');
             var scont_row = $('<span class="label"></span>');
             
             
 
-			scont_row.append('<a href=\'javascript:set_scene("'+ scene.name +'")\' >'+scene.name+'</a>');
+            scont_row.append('<a href=\'javascript:set_scene("'+ scene.name +'")\' >'+scene.name+'</a>');
             scont_row.append('<a href=\'javascript:delete_scene("'+ scene.name +'")\' > (delete)</a>');
             scont.append(scont_row);
 
-			cont.append(scont);
-				
-		}
-		//alert(data['units']);
-	}
+            cont.append(scont);
+                
+        }
+
+    }
   });
 }
 
@@ -128,37 +132,37 @@ function get_scenes()
 
 function init_power()
 {
-	get_power();
+    get_power();
 }
 
-function set_power(base,unit,state)
+function set_power(name,base,unit,state)
 {
 
-	$.get("rfpower.set?base="+base+"&unit="+unit+"&state="+state);
+    $.get("rfpower.set?name="+name+"&base="+base+"&unit="+unit+"&state="+state);
 }
 
 function get_power()
 {
   $.getJSON("/rfpower.get", function(data){
-	if(data)
-	{
-		var units = data['units'];
-		var cont = $('#switches');
-		cont.empty();
-		for (i = 0; i < units.length; i++)
-		{
-			var unit = units[i];
-			rfcont = $('<div class="rfpower"></div>');
+    if(data)
+    {
+        var units = data['units'];
+        var cont = $('#switches');
+        cont.empty();
+        for (i = 0; i < units.length; i++)
+        {
+            var unit = units[i];
+            rfcont = $('<div class="rfpower"></div>');
 
-			rfcont.append('<span class="label">'+unit.name+'</span>');
-			rfcont.append('<a class="on" href=\'javascript:set_power("'+unit.base+'","'+unit.unit+'","true")\'>ON</a>');
-			rfcont.append('<a class="off" href=\'javascript:set_power("'+unit.base+'","'+unit.unit+'","false")\'>OFF</a>');
+            rfcont.append('<span class="label">'+unit.name+'</span>');
+            rfcont.append('<a class="on" href=\'javascript:set_power("'+unit.name+'","'+unit.base+'","'+unit.unit+'","true")\'>ON</a>');
+            rfcont.append('<a class="off" href=\'javascript:set_power("'+unit.name+'","'+unit.base+'","'+unit.unit+'","false")\'>OFF</a>');
 
-			cont.append(rfcont);
-				
-		}
-		//alert(data['units']);
-	}
+            cont.append(rfcont);
+                
+        }
+        //alert(data['units']);
+    }
   });
 }
 
@@ -177,13 +181,13 @@ function set_color(r,g,b)
 function get_color()
 {
   $.getJSON("/ola.get", function(data){
-	set_colorwheel_color(parseInt(data['r']),parseInt(data['g']),parseInt(data['b']));
+    set_colorwheel_color(parseInt(data['r']),parseInt(data['g']),parseInt(data['b']));
   });
 }
 
 function set_colorwheel_color(r,g,b)
 {
-	cw.color("rgb(" + r + "," + g + "," + b + ")");
+    cw.color("rgb(" + r + "," + g + "," + b + ")");
 }
 
 function init_ola()
@@ -200,13 +204,13 @@ function init_ola()
   $('#powerbutton').width(size * 0.15);
   $('#powerbutton').height(size * 0.15);
   $('#powerbutton').on('click', function(){
-	set_color(0,0,0);
-	});
+    set_color(0,0,0);
+    });
 
   
 }
 
   
 </script>
-	</body>
-	</html>
+    </body>
+    </html>

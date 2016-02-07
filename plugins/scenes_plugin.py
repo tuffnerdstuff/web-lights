@@ -11,16 +11,12 @@ ATTR_DATA = "data"
 
 class ScenePlugin(ServerPlugin):
     
-    def set_state(self, data):
-        print("SCENE SET")
-        # We do not have to keep track of any state
-        pass
     
-    def set_action(self,data):
+    def do(self,data):
         
         # init empty data
-        if not SECT_SCENES in self.data:
-            self.data = {SECT_SCENES:[]}
+        if not SECT_SCENES in self.state:
+            self.state = {SECT_SCENES:[]}
         
         if (ATTR_LOADACTION in data):
         
@@ -29,7 +25,7 @@ class ScenePlugin(ServerPlugin):
             # set action data-scheme: {"load": "scenename"}
             name = data[ATTR_LOADACTION][0]
             # scene data-scheme: "scenes": [ { "name": "scenename", "states" : { "plugin": "pluginname1", "data": {... data ...} }, ...} ]
-            for scene in self.data[SECT_SCENES]:
+            for scene in self.state[SECT_SCENES]:
                 if scene[ATTR_NAME] == name:
                     self.activate_scene(scene[ATTR_STATES])
                     break
@@ -47,12 +43,12 @@ class ScenePlugin(ServerPlugin):
                 plugin_obj = self.plugin_manager.get_plugin(plugin)
                 if plugin_obj:
                     # TODO: Somehow copying the data gets a reference to the data object
-                    states.append({ATTR_PLUGIN : plugin, ATTR_DATA : plugin_obj.get()})
+                    states.append({ATTR_PLUGIN : plugin, ATTR_DATA : plugin_obj.get_state()})
             
             new_scenes = []
             new_scene = {ATTR_NAME:scenename,ATTR_STATES:states}
             scene_updated = False
-            for scene in self.data[SECT_SCENES]:
+            for scene in self.state[SECT_SCENES]:
                 if scene[ATTR_NAME] == scenename:
                     new_scenes.append(new_scene)
                     scene_updated = True
@@ -62,8 +58,8 @@ class ScenePlugin(ServerPlugin):
             if not scene_updated:
                 new_scenes.append(new_scene)
             
-            self.data = {SECT_SCENES:new_scenes}
-            self.save_state()
+            self.state = {SECT_SCENES:new_scenes}
+            self._save_state()
                 
         elif (ATTR_DELACTION in data):
             scenename = data[ATTR_DELACTION][0]
@@ -71,12 +67,12 @@ class ScenePlugin(ServerPlugin):
             new_scenes = []
 
             # iterate over scenes and leave out deleted scene
-            for scene in self.data[SECT_SCENES]:
+            for scene in self.state[SECT_SCENES]:
                 if scene[ATTR_NAME] != scenename:
                     new_scenes.append(scene)
             
-            self.data = {SECT_SCENES:new_scenes}
-            self.save_state()
+            self.state = {SECT_SCENES:new_scenes}
+            self._save_state()
                 
                 
     def activate_scene(self,states):
@@ -84,7 +80,8 @@ class ScenePlugin(ServerPlugin):
             plugin_name = state[ATTR_PLUGIN]
             plugin_data = state[ATTR_DATA]
             plugin = self.plugin_manager.get_plugin(plugin_name)
-            plugin.set(plugin_data)
+            plugin._set_state(plugin_data)
+            plugin._render_state()
             
         
             
