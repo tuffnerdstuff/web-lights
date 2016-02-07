@@ -1,14 +1,21 @@
 from plugins.server_plugin import ServerPlugin
 from thread import start_new_thread
-from scapy.all import srp
-from scapy.all import Ether, ARP, conf
 
-import sys, time
+import os, time, subprocess
+
+TRIGGER_ON = "Alles an"
+TRIGGER_OFF = "Alles aus"
+
 
 class ARPingPlugin(ServerPlugin):
     
     def _on_init_plugin(self):
-        self.macs = ("84:8e:df:59:8c:c3")
+        path = os.path.abspath(__file__)
+        dir_path = os.path.dirname(path)
+        self.arping_path = os.path.join(dir_path,'arping')
+        
+        self.was_on = True
+        
         start_new_thread(self.__scan_loop,())
     
     def do(self,args):
@@ -16,31 +23,20 @@ class ARPingPlugin(ServerPlugin):
         
     def __scan_loop(self):
         while True:
-            for ip, mac in arping():
-                if mac in self.macs:
-                    print("%s went online!")
-                    break
-            time.sleep(5)
             
-        
-
-def arping(iprange="192.168.1.*"):
-    """Arping function takes IP Address or Network, returns nested mac/ip list"""
-
-    #conf, verb = 0
-    ans, unans = srp(Ether(dst="ff:ff:ff:ff:ff:ff")/ARP(pdst=iprange), timeout=4)
-
-    collection = []
-    for snd, rcv in ans:
-        result = rcv.sprintf(r"%ARP.psrc% %Ether.src%").split()
-        collection.append(result)
-    return collection
-
-if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        for ip in sys.argv[1:]:
-            print "arping", ip
-            print arping(ip)
-
-    else:
-        print arping()
+            plugin = self.plugin_manager.get_plugin("scenes")
+            #print(plugin.get_state())
+            
+            
+            #print("SCANNING")
+            is_device_online = subprocess.call(self.arping_path) == 0
+            #print(is_device_online)
+            if is_device_online and not self.was_on:
+                self.was_on = True
+                plugin.do({"load":[TRIGGER_ON]})
+                print("TRIGGER ON!!!")
+            elif not is_device_online and self.was_on:
+                self.was_on = False
+                plugin.do({"load":[TRIGGER_OFF]})
+                print("TRIGGER OFF!!!")
+            time.sleep(5)
