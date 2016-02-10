@@ -61,6 +61,10 @@ $(document).ready(function ()
     
 });
 
+$(window).on('focusin', function() {
+    set_loading();
+});
+
 $(window).resize(function () 
 {
     init_ola();
@@ -75,7 +79,9 @@ function init_scenes()
 function set_scene(name)
 {
 
-    $.get("scenes.set?load="+name);
+    $.get("scenes.set?load="+name, function(data){
+            get_color();
+    });
 }
 
 function delete_scene(name)
@@ -194,6 +200,8 @@ function get_color()
 {
   $.getJSON("/ola.get", function(data){
     set_colorwheel_color(parseInt(data['r']),parseInt(data['g']),parseInt(data['b']));
+    // TODO: It is arbitrary to stop loading animation here, maybe we should do something specific ("ping" action)
+    remove_loading();
   });
 }
 
@@ -220,6 +228,21 @@ function init_ola()
     });
 
   
+}
+
+// Loading Overlay
+
+function set_loading() {
+        $('#overlay').remove();
+        // add the overlay with loading image to the page
+        var over = '<div id="overlay">' +
+            '<img id="loading" src="http://www.mytreedb.com/uploads/mytreedb/loader/ajax_loader_blue_512.gif">' +
+            '</div>';
+        $(over).appendTo('body');
+}
+
+function remove_loading(){
+    $('#overlay').remove();
 }
 
   

@@ -106,11 +106,6 @@ class MyServer(BaseHTTPRequestHandler):
         return re.match(("/(.*?)\.%s"%mode),url).group(1)
 
 
-    def set_color(self,r,g,b):
-        print("Setting color to: (%i,%i,%i)" % (r, g, b))
-        ola_color.SendDMXFrame(r,g,b)
-
-
 if len(sys.argv) == 2:
     ROOT = sys.argv[1]
 else:
