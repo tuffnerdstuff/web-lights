@@ -85,6 +85,7 @@ class ScenePlugin(ServerPlugin):
             plugin = self.plugin_manager.get_plugin(plugin_name)
             plugin._set_state(plugin_data)
             plugin._render_state()
+            plugin._save_state()
             
         
             
