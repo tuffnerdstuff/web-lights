@@ -62,7 +62,7 @@ $(document).ready(function ()
 });
 
 $(window).on('focusin', function() {
-    set_loading();
+    init_ola();
 });
 
 $(window).resize(function () 
@@ -212,6 +212,8 @@ function set_colorwheel_color(r,g,b)
 
 function init_ola()
 {
+    // set loading wheel
+    set_loading();
   var size = Math.min($(window).width(), $(window).height()) * 0.9
   $("#colorwheel").empty();
   cw = Raphael.colorwheel($("#colorwheel")[0],size);
