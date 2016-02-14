@@ -34,11 +34,6 @@ class OlaPlugin(ServerPlugin):
         # set instance
         global instance
         instance = self
-        
-        # instance variables
-        if not dummy_mode:
-            global wrapper
-            wrapper = ClientWrapper()
             
         # mode
         self.mode = MODE_SOLID
@@ -48,7 +43,7 @@ class OlaPlugin(ServerPlugin):
         
         # start render loop
         if not dummy_mode:
-            update_color()
+            start_loop()
         
     def do(self,data):
         
@@ -66,7 +61,7 @@ class OlaPlugin(ServerPlugin):
             self.state[ATTR_RED][0] = int(self.state[ATTR_RED][0]*phase)
             self.state[ATTR_GREEN][0] = int(self.state[ATTR_GREEN][0]*phase)
             self.state[ATTR_BLUE][0] = int(self.state[ATTR_BLUE][0]*phase)
-            
+        
         global tick
         tick = (tick + 1) % 255
 
@@ -78,11 +73,18 @@ class OlaPlugin(ServerPlugin):
 def stop_wrapper(state):
     if not state.Succeeded():
         wrapper.Stop()
+        
+def start_loop():
+    wrapper = ClientWrapper()
+    wrapper.AddEvent(TICK_INTERVAL, update_color)
+    wrapper.Run()
 
 def update_color():
-
+    
+    # Schedule tick
     wrapper.AddEvent(TICK_INTERVAL, update_color)
 
+    # Get next color
     r,g,b = instance.get_color()
     instance._tick()
     
