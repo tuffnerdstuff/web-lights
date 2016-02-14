@@ -38,23 +38,45 @@ body {
 	background-color: #010D19;
 	padding: 0.6em 0 0 0;
 	display: inline-block;
-	min-width: 46%;
+	
 	min-height: 2em;
-	text-align:center;
-	text-decoration: none;
+	
 	line-height:100%;
 }
 
+.button, .button a {
+    text-align:center;
+	text-decoration: none;
+}
+
 .fullwidth {
+    color: green;
     min-width:100%;
 }
 
+.bigon {
+    min-width: 90%;
+	float:left;
+}
+.bigon a {
+    padding-left:10%;
+    color: green;
+}
+
+.smalloff {
+    min-width: 9%;
+	color: red;
+	float:right;
+}
+
 .on {
+    min-width: 46%;
 	color: green;
 	float:left;
 }
 
 .off {
+    min-width: 46%;
 	color: red;
 	float:right;
 }

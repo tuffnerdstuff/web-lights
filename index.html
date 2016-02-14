@@ -134,9 +134,9 @@ function get_scenes()
             var scont_row = $('<span class="label"></span>');
             
             
-            scont_row.append('<span class="label">'+scene.name+'</span>');
-            scont_row.append('<a class="button on" href=\'javascript:set_scene("'+ scene.name +'")\' >ON</a>');
-            scont_row.append('<a class="button off" href=\'javascript:delete_scene("'+ scene.name +'")\' >DELETE</a>');
+            scont_row.append('<span class="label">'+ scene.name +'</span>');
+            scont_row.append('<div class="button bigon"><a href=\'javascript:set_scene("'+ scene.name +'")\' >LOAD</a></div>');
+            scont_row.append('<a class="button smalloff" href=\'javascript:delete_scene("'+ scene.name +'")\' >X</a>');
             scont.append(scont_row);
 
             cont.append(scont);
@@ -148,7 +148,7 @@ function get_scenes()
     // Add Scene Button
     var add_scene = $('<div class="row"></div>');
     add_scene.append('<span class="label">[New Scene]</span>');
-    add_scene.append('<div><a class="button on fullwidth" href=\'javascript:save_scene()\' >ADD</a></div>');
+    add_scene.append('<div><a class="button fullwidth" href=\'javascript:save_scene()\' >+</a></div>');
     cont.append(add_scene);
     
   });
