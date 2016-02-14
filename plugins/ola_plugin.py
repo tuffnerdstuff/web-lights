@@ -46,8 +46,9 @@ class OlaPlugin(ServerPlugin):
         # restore state
         self._restore_state()
         
-        # render state
-        self._render_state()
+        # start render loop
+        if not dummy_mode:
+            update_color()
         
     def do(self,data):
         
