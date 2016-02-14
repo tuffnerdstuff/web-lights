@@ -24,7 +24,7 @@ class ScenePlugin(ServerPlugin):
             ## LOAD SCENE ##
             
             # set action data-scheme: {"load": "scenename"}
-            name = data[ATTR_LOADACTION][0]
+            name = data[ATTR_LOADACTION][0].decode("utf-8")
             # scene data-scheme: "scenes": [ { "name": "scenename", "states" : { "plugin": "pluginname1", "data": {... data ...} }, ...} ]
             for scene in self.state[SECT_SCENES]:
                 if scene[ATTR_NAME] == name:
@@ -38,7 +38,7 @@ class ScenePlugin(ServerPlugin):
             ## SAVE SCENE ##
             
             # set action data-scheme: {"save": "scenename", "plugin": "plugin1", "plugin2", ... , "pluginN"}
-            scenename = data[ATTR_SAVEACTION][0]
+            scenename = data[ATTR_SAVEACTION][0].decode("utf-8")
             plugins = data[ATTR_PLUGIN]
             states = []
             
