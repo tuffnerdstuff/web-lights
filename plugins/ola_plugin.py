@@ -63,15 +63,15 @@ class OlaPlugin(ServerPlugin):
             pass
         elif self.mode == MODE_PULSE:
             phase = tick / 255
-            data[ATTR_RED][0] = int(data[ATTR_RED][0]*phase)
-            data[ATTR_GREEN][0] = int(data[ATTR_GREEN][0]*phase)
-            data[ATTR_BLUE][0] = int(data[ATTR_BLUE][0]*phase)
+            self.state[ATTR_RED][0] = int(self.state[ATTR_RED][0]*phase)
+            self.state[ATTR_GREEN][0] = int(self.state[ATTR_GREEN][0]*phase)
+            self.state[ATTR_BLUE][0] = int(self.state[ATTR_BLUE][0]*phase)
             
         global tick
         tick = (tick + 1) % 255
 
     def get_color(self):
-        return ( int(self.data[ATTR_RED][0]), int(self.data[ATTR_GREEN][0]), int(self.data[ATTR_BLUE][0]) )
+        return ( int(self.state[ATTR_RED][0]), int(self.state[ATTR_GREEN][0]), int(self.state[ATTR_BLUE][0]) )
 
 ## OLA METHODS ##
 
