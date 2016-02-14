@@ -1,6 +1,11 @@
 from yapsy.IPlugin import IPlugin
 import storage, copy
 
+FLAG_SIM = "simulation"
+VALUE_TRUE = "true"
+VALUE_FALSE = "false"
+
+
 class ServerPlugin(IPlugin):
     
     def __init__(self):
@@ -41,6 +46,12 @@ class ServerPlugin(IPlugin):
     """ Realizes the current state (switch on light, wake up PC, nuke planet, etc.) """
     def _render_state(self):
         pass
+        
+    def _is_simulation(self):
+        if self.state:
+            if FLAG_SIM in self.state:
+                return self.state[FLAG_SIM] == VALUE_TRUE
+        return False
       
     """ Alters the state of the plugin based on the arguments """
     def do(self,args):

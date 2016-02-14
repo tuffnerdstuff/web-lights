@@ -61,7 +61,7 @@ $(document).ready(function ()
     
 });
 
-$(window).on('focusin', function() {
+$(window).on('focus', function() {
     init_ola();
 });
 
@@ -87,8 +87,12 @@ function set_scene(name)
 function delete_scene(name)
 {
 
-    $.get("scenes.set?delete="+name);
-    get_scenes();
+    if (confirm('Do you really want to delete scene "' + name + '"?'))
+    {
+        $.get("scenes.set?delete="+name);
+        get_scenes();
+    }
+    
 }
 
 function save_scene()

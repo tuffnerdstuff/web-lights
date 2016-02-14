@@ -59,8 +59,8 @@ class RFPowerPlugin(ServerPlugin):
         state = "1" if "true" == data[ATTR_STATE] else "0"
         print("[%s] base=%s unit=%s state=%s "%(self.name, base, unit, state))
         try:
-            subprocess.call(["sudo",self.send_path,base,unit,state])
-            pass
+            if not self._is_simulation():
+                subprocess.call(["sudo",self.send_path,base,unit,state])
         except Exception:
             print("Could not send RF signal!")
         

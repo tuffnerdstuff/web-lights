@@ -27,16 +27,16 @@ class ARPingPlugin(ServerPlugin):
             plugin = self.plugin_manager.get_plugin("scenes")
             #print(plugin.get_state())
             
-            
-            #print("SCANNING")
-            is_device_online = subprocess.call(self.arping_path) == 0
-            #print(is_device_online)
-            if is_device_online and not self.was_on:
-                self.was_on = True
-                plugin.do({"load":[TRIGGER_ON]})
-                print("TRIGGER ON!!!")
-            elif not is_device_online and self.was_on:
-                self.was_on = False
-                plugin.do({"load":[TRIGGER_OFF]})
-                print("TRIGGER OFF!!!")
+            if plugin:
+                print("SCANNING")
+                is_device_online = subprocess.call(self.arping_path) == 0
+                #print(is_device_online)
+                if is_device_online and not self.was_on:
+                    self.was_on = True
+                    plugin.do({"load":[TRIGGER_ON]})
+                    print("TRIGGER ON!!!")
+                elif not is_device_online and self.was_on:
+                    self.was_on = False
+                    plugin.do({"load":[TRIGGER_OFF]})
+                    print("TRIGGER OFF!!!")
             time.sleep(5)
