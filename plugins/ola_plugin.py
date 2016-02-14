@@ -59,9 +59,13 @@ class OlaPlugin(ServerPlugin):
             pass
         elif self.mode == MODE_PULSE:
             phase = tick / 255
-            self.state[ATTR_RED][0] = int(self.state[ATTR_RED][0]*phase)
-            self.state[ATTR_GREEN][0] = int(self.state[ATTR_GREEN][0]*phase)
-            self.state[ATTR_BLUE][0] = int(self.state[ATTR_BLUE][0]*phase)
+            r = int(round(int(self.state[ATTR_RED][0]) * phase))
+            g = int(round(int(self.state[ATTR_GREEN][0]) * phase))
+            b = int(round(int(self.state[ATTR_BLUE][0]) * phase))
+            
+            self.state[ATTR_RED][0] = int(r)
+            self.state[ATTR_GREEN][0] = int(g)
+            self.state[ATTR_BLUE][0] = int(b)
         
         global tick
         tick = (tick + 1) % 255
