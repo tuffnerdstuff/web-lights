@@ -16,14 +16,32 @@ ATTR_RED = 'r'
 ATTR_GREEN = 'g'
 ATTR_BLUE = 'b'
 
+MODE_SOLID = 0
+MODE_PULSE = 1
+
+TICK_INTERVAL = 100
+
+wrapper = None
+instance = None
+tick = 0
+
 class OlaPlugin(ServerPlugin):
 
     ## PLUGIN METHODS ##
 
     def _on_init_plugin(self):
         
+        # set instance
+        global instance
+        instance = self
+        
         # instance variables
-        self.wrapper = None
+        if not dummy_mode:
+            global wrapper
+            wrapper = ClientWrapper()
+            
+        # mode
+        self.mode = MODE_SOLID
         
         # restore state
         self._restore_state()
@@ -36,48 +54,51 @@ class OlaPlugin(ServerPlugin):
         # save state
         self.state = data
         
-        # render state
-        self._render_state()
-        
         # persist state
         self._save_state()
         
-    def _render_state(self):
-        
-        # load state
-        r,g,b = self.get_color(self.state)
+    def _tick(self):
+        if self.mode == MODE_SOLID:
+            pass
+        elif self.mode == MODE_PULSE:
+            phase = tick / 255
+            data[ATTR_RED][0] = int(data[ATTR_RED][0]*phase)
+            data[ATTR_GREEN][0] = int(data[ATTR_GREEN][0]*phase)
+            data[ATTR_BLUE][0] = int(data[ATTR_BLUE][0]*phase)
+            
+        global tick
+        tick = (tick + 1) % 255
 
-        # send color to DMX
-        self.send_color(r,g,b)
-        
-        
-    ## OLA METHODS ##
+    def get_color(self):
+        return ( int(self.data[ATTR_RED][0]), int(self.data[ATTR_GREEN][0]), int(self.data[ATTR_BLUE][0]) )
 
-    def stop_wrapper(self,state):
-        self.wrapper.Stop()
+## OLA METHODS ##
 
-    def get_color(self,data):
-        return ( int(data[ATTR_RED][0]), int(data[ATTR_GREEN][0]), int(data[ATTR_BLUE][0]) )
+def stop_wrapper(state):
+    if not state.Succeeded():
+        wrapper.Stop()
 
-    def send_color(self,r,g,b):
-        if not dummy_mode:
-            self.wrapper = ClientWrapper()
+def update_color():
 
-        # Fill RGB bar array
-        data = array.array('B')
-        for i in range(0,SEGMENTS):
-            data.append(r)
-            data.append(g)
-            data.append(b)
+    wrapper.AddEvent(TICK_INTERVAL, update_color)
 
-        # Fill remaining channels with zeros
-        for i in range(0,MAX_CHANNELS-SEGMENTS*COLORS):
-            data.append(0)
+    r,g,b = instance.get_color()
+    instance._tick()
+    
+    # Fill RGB bar array
+    data = array.array('B')
+    for i in range(0,SEGMENTS):
+        data.append(r)
+        data.append(g)
+        data.append(b)
 
-        # send
-        if not dummy_mode:
-            self.wrapper.Client().SendDmx(UNIVERSE, data, self.stop_wrapper)
+    # Fill remaining channels with zeros
+    for i in range(0,MAX_CHANNELS-SEGMENTS*COLORS):
+        data.append(0)
 
+    # send
+    if self.wrapper:
+        self.wrapper.Client().SendDmx(UNIVERSE, data, stop_wrapper)
 
 
 
