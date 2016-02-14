@@ -75,6 +75,7 @@ def stop_wrapper(state):
         wrapper.Stop()
         
 def start_loop():
+    global wrapper
     wrapper = ClientWrapper()
     wrapper.AddEvent(TICK_INTERVAL, update_color)
     wrapper.Run()
