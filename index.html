@@ -114,8 +114,15 @@ function get_scenes()
     {
 
  
-        var scenes = data['scenes'];       
+        var scenes = data['scenes'];
         
+        // Sort scenes
+        scenes.sort(function(a,b){
+            return a.name.localeCompare(b.name);
+            
+        });
+        
+        // List scenes
         for (i = 0; i < scenes.length; i++)
         {
             var scene = scenes[i];
