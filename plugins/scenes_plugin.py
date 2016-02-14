@@ -65,7 +65,7 @@ class ScenePlugin(ServerPlugin):
             self._save_state()
                 
         elif (ATTR_DELACTION in data):
-            scenename = data[ATTR_DELACTION][0]
+            scenename = data[ATTR_DELACTION][0].decode("utf-8")
                     
             new_scenes = []
 
