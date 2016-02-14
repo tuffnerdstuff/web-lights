@@ -98,8 +98,8 @@ def update_color():
         data.append(0)
 
     # send
-    if self.wrapper:
-        self.wrapper.Client().SendDmx(UNIVERSE, data, stop_wrapper)
+    if wrapper:
+        wrapper.Client().SendDmx(UNIVERSE, data, stop_wrapper)
 
 
 
