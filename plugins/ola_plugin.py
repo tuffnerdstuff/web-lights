@@ -44,7 +44,7 @@ class OlaPlugin(ServerPlugin):
         
         # start render loop
         if not dummy_mode:
-            start_new_thread(start_loop,[])
+            start_new_thread(start_loop,())
         
     def do(self,data):
         
