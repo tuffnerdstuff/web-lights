@@ -37,7 +37,7 @@ class OlaPlugin(ServerPlugin):
         instance = self
             
         # mode
-        self.mode = MODE_SOLID
+        self.mode = MODE_PULSE
         
         # restore state
         self._restore_state()
@@ -58,11 +58,12 @@ class OlaPlugin(ServerPlugin):
         if self.mode == MODE_SOLID:
             pass
         elif self.mode == MODE_PULSE:
-            phase = tick / 255
+            phase = tick / 255.0
+            print("phase", phase)
             r = int(round(int(self.state[ATTR_RED][0]) * phase))
             g = int(round(int(self.state[ATTR_GREEN][0]) * phase))
             b = int(round(int(self.state[ATTR_BLUE][0]) * phase))
-            
+            print ("tick",r,g,b) 
             self.state[ATTR_RED][0] = int(r)
             self.state[ATTR_GREEN][0] = int(g)
             self.state[ATTR_BLUE][0] = int(b)
@@ -92,6 +93,7 @@ def update_color():
 
     # Get next color
     r,g,b = instance.get_color()
+    print(r,g,b)
     instance._tick()
     
     # Fill RGB bar array
