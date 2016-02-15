@@ -20,11 +20,15 @@ ATTR_BLUE = 'b'
 MODE_SOLID = 0
 MODE_PULSE = 1
 
-TICK_INTERVAL = 100
+TICK_INTERVAL = 10
 
 wrapper = None
 instance = None
 tick = 0
+
+r = 0
+g = 0
+b = 0
 
 class OlaPlugin(ServerPlugin):
 
@@ -35,6 +39,7 @@ class OlaPlugin(ServerPlugin):
         # set instance
         global instance
         instance = self
+        
             
         # mode
         self.mode = MODE_PULSE
@@ -60,16 +65,15 @@ class OlaPlugin(ServerPlugin):
         elif self.mode == MODE_PULSE:
             phase = tick / 255.0
             print("phase", phase)
+            global r,g,b
             r = int(round(int(self.state[ATTR_RED][0]) * phase))
             g = int(round(int(self.state[ATTR_GREEN][0]) * phase))
             b = int(round(int(self.state[ATTR_BLUE][0]) * phase))
             print ("tick",r,g,b) 
-            self.state[ATTR_RED][0] = int(r)
-            self.state[ATTR_GREEN][0] = int(g)
-            self.state[ATTR_BLUE][0] = int(b)
+
         
         global tick
-        tick = (tick + 1) % 255
+        tick = (tick + 5) % 255
 
     def get_color(self):
         return ( int(self.state[ATTR_RED][0]), int(self.state[ATTR_GREEN][0]), int(self.state[ATTR_BLUE][0]) )
@@ -92,7 +96,7 @@ def update_color():
     wrapper.AddEvent(TICK_INTERVAL, update_color)
 
     # Get next color
-    r,g,b = instance.get_color()
+
     print(r,g,b)
     instance._tick()
     
