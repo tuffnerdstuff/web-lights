@@ -1,4 +1,4 @@
-import array
+import array, random
 from thread import start_new_thread
 dummy_mode = False
 try:
@@ -19,16 +19,16 @@ ATTR_BLUE = 'b'
 
 MODE_SOLID = 0
 MODE_PULSE = 1
+MODE_FIRE = 2
 
 TICK_INTERVAL = 10
 
 wrapper = None
 instance = None
 tick = 0
+mode = MODE_FIRE
 
-r = 0
-g = 0
-b = 0
+data = None
 
 class OlaPlugin(ServerPlugin):
 
@@ -39,10 +39,6 @@ class OlaPlugin(ServerPlugin):
         # set instance
         global instance
         instance = self
-        
-            
-        # mode
-        self.mode = MODE_PULSE
         
         # restore state
         self._restore_state()
@@ -58,22 +54,6 @@ class OlaPlugin(ServerPlugin):
         
         # persist state
         self._save_state()
-        
-    def _tick(self):
-        if self.mode == MODE_SOLID:
-            pass
-        elif self.mode == MODE_PULSE:
-            phase = tick / 255.0
-            print("phase", phase)
-            global r,g,b
-            r = int(round(int(self.state[ATTR_RED][0]) * phase))
-            g = int(round(int(self.state[ATTR_GREEN][0]) * phase))
-            b = int(round(int(self.state[ATTR_BLUE][0]) * phase))
-            print ("tick",r,g,b) 
-
-        
-        global tick
-        tick = (tick + 5) % 255
 
     def get_color(self):
         return ( int(self.state[ATTR_RED][0]), int(self.state[ATTR_GREEN][0]), int(self.state[ATTR_BLUE][0]) )
@@ -96,25 +76,85 @@ def update_color():
     wrapper.AddEvent(TICK_INTERVAL, update_color)
 
     # Get next color
-
-    print(r,g,b)
-    instance._tick()
+    
+    _tick()
     
     # Fill RGB bar array
-    data = array.array('B')
-    for i in range(0,SEGMENTS):
-        data.append(r)
-        data.append(g)
-        data.append(b)
+    
 
     # Fill remaining channels with zeros
-    for i in range(0,MAX_CHANNELS-SEGMENTS*COLORS):
-        data.append(0)
+    intData = array.array('B')
+    for i in data:
+        intData.append(int(i))
 
     # send
     if wrapper:
-        wrapper.Client().SendDmx(UNIVERSE, data, stop_wrapper)
+        wrapper.Client().SendDmx(UNIVERSE, intData, stop_wrapper)
 
+def _tick():
+    if mode == MODE_SOLID:
+        pass
+    elif mode == MODE_PULSE:
+        phase = tick / 255.0
+        print("phase", phase)
+        
+        origR,origG,origB = instance.get_color()
+        r = int(round(int(origR) * phase))
+        g = int(round(int(origG) * phase))
+        b = int(round(int(origB) * phase))
+        
+        global data
+        data = array.array('B')
+        for i in range(0,SEGMENTS):
+            data.append(r)
+            data.append(g)
+            data.append(b)
+        
+    elif mode == MODE_FIRE:
+        r,g,b = instance.get_color()
+        fR = r / 255.0
+        fG = g / 255.0
+        fB = b / 255.0
+        
+        global data
+        
+        if data == None:
+            data = []
+            for i in range(0,SEGMENTS):
+                data.append(r)
+                data.append(g)
+                data.append(b)
+        
+        dataNew = []
+        for i in range(0,SEGMENTS):
+            
+            rLast = data[i]
+            gLast = data[i+1]
+            bLast = data[i+2]
+            
+            dir = 0
+            if rLast == 0 or gLast == 0 or bLast == 0:
+                dir = 1
+            elif rLast == 255 or gLast == 255 or bLast == 255:
+                dir = -1
+            else:
+                dir = random.choice([-1,1])
+            
+            newR = rLast + (dir * fR)
+            newG = gLast + (dir * fG)
+            newB = bLast + (dir * fB)
+            
+            print(newR,newG,newB)
+            
+            dataNew.append(newR)
+            dataNew.append(newG)
+            dataNew.append(newB)
+        
+        data = dataNew
+
+    
+    global tick
+    tick = (tick + 1) % 255
 
 
 if __name__=="__main__":
