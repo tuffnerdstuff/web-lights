@@ -1,4 +1,4 @@
-import array, random
+import array, noise
 from thread import start_new_thread
 dummy_mode = False
 try:
@@ -111,38 +111,24 @@ def _tick():
             data.append(b)
         
     elif mode == MODE_FIRE:
-        r,g,b = instance.get_color()
-        fR = r / 255.0
-        fG = g / 255.0
-        fB = b / 255.0
+        #r,g,b = instance.get_color()
         
-        global data
+        r1 = 255.0
+        g1 = 180.0
+        b1 = 0.0
         
-        if data == None:
-            data = []
-            for i in range(0,SEGMENTS):
-                data.append(r)
-                data.append(g)
-                data.append(b)
+        r2 = 40.0
+        g2 = 0.0
+        b2 = 0.0
         
         dataNew = []
         for i in range(0,SEGMENTS):
             
-            rLast = data[i]
-            gLast = data[i+1]
-            bLast = data[i+2]
+            brightness = noise.pnoise2(i/8.0,tick/64.0)/2.0+0.5
             
-            dir = 0
-            if rLast == 0 or gLast == 0 or bLast == 0:
-                dir = 1
-            elif rLast == 255 or gLast == 255 or bLast == 255:
-                dir = -1
-            else:
-                dir = random.choice([-1,1])
-            
-            newR = rLast + (dir * fR)
-            newG = gLast + (dir * fG)
-            newB = bLast + (dir * fB)
+            newR = r1 * (1-brightness) + r2 * brightness
+            newG = g1 * (1-brightness) + g2 * brightness
+            newB = b1 * (1-brightness) + b2 * brightness
             
             print(newR,newG,newB)
             
@@ -154,7 +140,7 @@ def _tick():
 
     
     global tick
-    tick = (tick + 1) % 255
+    tick = (tick + 1) % 99999
 
 
 if __name__=="__main__":
