@@ -9,8 +9,8 @@ Installation
 0. Install python
 1. Install OLA and configure your DMX universe 
 2. Configure web-lights
-2.1. Universe ID can be set via UNIVERSE in ola_color.py (default = 1)
-2.2. Size of RGB array can be set via SEGMENTS in ola_color.py (default = 8)
+2.1. Universe ID can be set via UNIVERSE in rfpower_plugin.py (default = 1)
+2.2. Size of RGB array can be set via SEGMENTS in rfpower_plugin.py (default = 8)
 4. Install initscript
 4.1. Make a symlink to web-lights.py: sudo ln -s /usr/bin/web-lights <BASE>/web-lights.py
 4.2. Copy init script (located in init_script/web-lights): cp <BASE>/init_script/web-lights /etc/init.d/
