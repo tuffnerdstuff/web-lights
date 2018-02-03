@@ -4,6 +4,7 @@ from os import curdir, sep, path
 import time, json, sys, re, logging
 
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+from SocketServer import ThreadingMixIn
 from urlparse import urlparse, parse_qs
 from plugin_system import ServerPluginManager as PM
 
@@ -16,7 +17,10 @@ ROOT = path.dirname(path.realpath(sys.argv[0]))
 pm = None
 logging.basicConfig()
 
-class MyServer(BaseHTTPRequestHandler):
+class WebLightsServer(ThreadingMixIn, HTTPServer):
+    pass
+
+class WebLightsRequestHandler(BaseHTTPRequestHandler):
         
 
     def do_GET(self):
@@ -110,7 +114,7 @@ if len(sys.argv) == 2:
     ROOT = sys.argv[1]
 else:
     ROOT = path.dirname(path.realpath(sys.argv[0]))
-myServer = HTTPServer((HOST, PORT), MyServer)
+myServer = WebLightsServer((HOST, PORT), WebLightsRequestHandler)
 pm = PM()
 print(time.asctime(), "Server Starts - %s:%s" % (HOST, PORT))
 
