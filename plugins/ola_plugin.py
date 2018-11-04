@@ -111,13 +111,13 @@ def _tick():
             data.append(b)
         
     elif mode == MODE_FIRE:
-        #r,g,b = instance.get_color()
+        r1,g1,b1 = instance.get_color()
         
-        r1 = 255.0
-        g1 = 180.0
-        b1 = 0.0
+        #r1 = 255.0
+        #g1 = 180.0
+        #b1 = 0.0
         
-        r2 = 40.0
+        r2 = 0.0
         g2 = 0.0
         b2 = 0.0
         
